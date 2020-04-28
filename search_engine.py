@@ -11,7 +11,7 @@ def load_data(path):
 def tf_idf(search_keys, dataframe, label):
   
 	tfidf_vectorizer = TfidfVectorizer(stop_words='english')
-	tfidf_weights_matrix = tfidf_vectorizer.fit_transform(dataframe.loc[:, label])
+	tfidf_weights_matrix = tfidf_vectorizer.fit_transform(dataframe.loc[:, label].values.astype('U'))
 	search_query_weights = tfidf_vectorizer.transform([search_keys])
 	
 	return search_query_weights, tfidf_weights_matrix
@@ -44,13 +44,14 @@ def main():
 
 	dataframe = load_data(data_base)
 
-	search_query_weights, tfidf_weights_matrix = tf_idf("sad", dataframe, "transcript")
+	search_query_weights, tfidf_weights_matrix = tf_idf("science fiction", dataframe, "overview")
 
 	similarity_list = cos_similarity(search_query_weights, tfidf_weights_matrix)
 
 	movies_list = most_similar(similarity_list)
 
-	print(movies_list)
+	for i in movies_list:
+		print(dataframe['original_title'][i])
 
 if __name__ == "__main__":
 	main()
