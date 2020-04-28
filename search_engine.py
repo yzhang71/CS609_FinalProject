@@ -11,7 +11,6 @@ current = []
 
 def parse_argument():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--keyword', type=str, default=None, required = True, help='key word to search')
     parser.add_argument('--input', type=str, default=None, required = True, help='input file to search')
     parser.add_argument('--content', type=str, default=None, required = True, help='content used to search')
     options = parser.parse_args()
@@ -79,7 +78,6 @@ def get_me():
 if __name__ == "__main__":
     options = parse_argument()
     search = options.content
-    key_word = options.keyword
     input_f = options.input
 
     root = Tk()
