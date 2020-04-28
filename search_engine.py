@@ -6,8 +6,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-result = []
-current = []
 
 def parse_argument():
     parser = argparse.ArgumentParser()
@@ -58,26 +56,47 @@ def main(keyword, content, input_file):
     similarity_list = cos_similarity(search_query_weights, tfidf_weights_matrix)
 
     movies_list = most_similar(similarity_list)
-    global result
+    result = []
     for i in movies_list:
-        print(dataframe['original_title'][i])
+        #print(dataframe['original_title'][i])
         result.append(dataframe['original_title'][i])
+    return result
+
+def searchUrl(keyword, content, input_file):
+
+
+    dataframe = load_data(input_file)
+
+    search_query_weights, tfidf_weights_matrix = tf_idf(keyword, dataframe, content)
+
+    similarity_list = cos_similarity(search_query_weights, tfidf_weights_matrix)
+
+    movies_list = most_similar(similarity_list)
+    result = []
+    for i in movies_list:
+        #print(dataframe['homepage'][i])
+        result.append(dataframe['homepage'][i])
     return result
 
 def get_me():
     global current
     entry_value = entry.get()
-    answer.delete(1.0, END)
-    result = main(entry_value, search, input_f)
-    for item in result:
-        answer_value = item + '\n'
+    result = main(entry_value, search_name, input_f)
+    url = searchUrl(entry_value, search_name, input_f)
+    for i in range(3):
+        answer_value = result[i] + '\n'
+        if url[i] == None:
+            url_res = 'No URL \n'
+        else:
+            url_res = str(url[i]) + '\n'
         answer.insert(INSERT, answer_value)
-        current.append(answer_value)
+        answer.insert(INSERT, url_res)
+
 
 
 if __name__ == "__main__":
     options = parse_argument()
-    search = options.content
+    search_name = options.content
     input_f = options.input
 
     root = Tk()
@@ -94,7 +113,6 @@ if __name__ == "__main__":
     answer = Text(bottomframe, width=30, height=10, yscrollcommand = scroll.set)
     scroll.config(command=answer.yview)
     answer.pack()
-    answer.delete("1.0", END)
     bottomframe.pack()
     root.mainloop()
 
