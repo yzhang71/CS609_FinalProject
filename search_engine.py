@@ -1,8 +1,22 @@
 import pandas as pd
 import sys
+import argparse
+from tkinter import *
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+
+result = []
+current = []
+
+def parse_argument():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--keyword', type=str, default=None, required = True, help='key word to search')
+    parser.add_argument('--input', type=str, default=None, required = True, help='input file to search')
+    parser.add_argument('--content', type=str, default=None, required = True, help='content used to search')
+    options = parser.parse_args()
+    return options
+
 
 def load_data(path):
 	dataframe = pd.read_csv(path)
@@ -35,23 +49,58 @@ def most_similar(similarity_list, min_movies=5):
 
 	return most_similar
 
-def main():
-	if len(sys.argv) != 2:
-		print("Wrong arguments")
-		exit()
+def main(keyword, content, input_file):
 
-	data_base = sys.argv[1]
 
-	dataframe = load_data(data_base)
+    dataframe = load_data(input_file)
 
-	search_query_weights, tfidf_weights_matrix = tf_idf("science fiction", dataframe, "overview")
+    search_query_weights, tfidf_weights_matrix = tf_idf(keyword, dataframe, content)
 
-	similarity_list = cos_similarity(search_query_weights, tfidf_weights_matrix)
+    similarity_list = cos_similarity(search_query_weights, tfidf_weights_matrix)
 
-	movies_list = most_similar(similarity_list)
+    movies_list = most_similar(similarity_list)
+    global result
+    for i in movies_list:
+        print(dataframe['original_title'][i])
+        result.append(dataframe['original_title'][i])
+    return result
 
-	for i in movies_list:
-		print(dataframe['original_title'][i])
+def get_me():
+    global current
+    entry_value = entry.get()
+    answer.delete(1.0, END)
+    result = main(entry_value, search, input_f)
+    for item in result:
+        answer_value = item + '\n'
+        answer.insert(INSERT, answer_value)
+        current.append(answer_value)
+
 
 if __name__ == "__main__":
-	main()
+    options = parse_argument()
+    search = options.content
+    key_word = options.keyword
+    input_f = options.input
+
+    root = Tk()
+    topframe = Frame(root)
+    topframe.pack(side = TOP)
+    entry = Entry(topframe)
+    entry.pack()
+    
+    button = Button(topframe, text='search', command=get_me)
+    button.pack()
+    bottomframe = Frame(root)
+    scroll = Scrollbar(bottomframe)
+    scroll.pack(side=RIGHT, fill=Y)
+    answer = Text(bottomframe, width=30, height=10, yscrollcommand = scroll.set)
+    scroll.config(command=answer.yview)
+    answer.pack()
+    answer.delete("1.0", END)
+    bottomframe.pack()
+    root.mainloop()
+
+
+
+
+
