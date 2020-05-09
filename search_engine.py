@@ -98,7 +98,7 @@ def bag_of_word(data, keyword):
         #count += words.count(keyword)
         title_list.append(title)
         num_list.append(count)
-    #print(title_list[0], num_list[0])
+    print('Result of Bag of Words: ')
     print(sorted(zip(num_list, title_list), reverse=True)[:3])
     return
 
@@ -111,6 +111,7 @@ if __name__ == "__main__":
     bag_of_word(res, options.key)
     #print(list(res.loc[0].values)[6])
     result = main(options.key, search_name, input_f)
+    print('Result of TF-IDF: ')
     print(result[:3])
 
     #User Design begin from here
