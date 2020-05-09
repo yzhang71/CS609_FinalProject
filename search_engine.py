@@ -34,7 +34,7 @@ def cos_similarity(search_query_weights, tfidf_weights_matrix):
 
 	return similarity_list
 
-def most_similar(similarity_list, min_movies=5):
+def most_similar(similarity_list, min_movies=3):
 	
 	most_similar= []
   
@@ -58,7 +58,7 @@ def main(keyword, content, input_file):
     movies_list = most_similar(similarity_list)
     result = []
     for i in movies_list:
-        #print(dataframe['original_title'][i])
+        print(dataframe['original_title'][i])
         result.append(dataframe['original_title'][i])
     return result
 
@@ -74,7 +74,7 @@ def searchUrl(keyword, content, input_file):
     movies_list = most_similar(similarity_list)
     result = []
     for i in movies_list:
-        #print(dataframe['homepage'][i])
+        print(dataframe['homepage'][i])
         result.append(dataframe['homepage'][i])
     return result
 
